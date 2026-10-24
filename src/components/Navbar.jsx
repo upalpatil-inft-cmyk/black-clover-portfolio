@@ -6,7 +6,7 @@ const links = [
   { label: 'About', href: '#about' },
   { label: 'Attributes', href: '#attributes' },
   { label: 'Missions', href: '#missions' },
-  { label: 'Contribute', href: '#contribute' },
+  { label: 'Achievements', href: '#contribute' },
   { label: 'Contact', href: '#contact' },
 ];
 
@@ -23,7 +23,7 @@ export default function Navbar({ theme, toggleTheme }) {
 
       <nav className={`nav-links ${menuOpen ? 'is-open' : ''}`} aria-label="Main navigation">
         {links.map(link => <a key={link.href} href={link.href} onClick={closeMenu}>{link.label}</a>)}
-        <a className="nav-mobile-cta" href="#missions" onClick={closeMenu}>Explore missions <span>↗</span></a>
+        <a className="nav-mobile-cta" href="#contribute" onClick={closeMenu}>View achievements <span>↗</span></a>
       </nav>
 
       <div className="nav-actions">
@@ -31,7 +31,7 @@ export default function Navbar({ theme, toggleTheme }) {
           {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
           <span>{theme === 'dark' ? 'LIGHT' : 'DARK'}</span>
         </button>
-        <a className="nav-cta" href="#missions">Explore missions <span>↗</span></a>
+        <a className="nav-cta" href="#contribute">View achievements <span>↗</span></a>
         <button className="menu-toggle" onClick={() => setMenuOpen(open => !open)} aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'} aria-expanded={menuOpen}>
           {menuOpen ? <X size={22} /> : <Menu size={22} />}
         </button>

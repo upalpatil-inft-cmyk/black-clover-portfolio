@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ArrowDownRight, ArrowUpRight, Clover, Github, Sparkles, Code2, ExternalLink, Upload, X, WandSparkles, ShieldCheck, RotateCcw, Play, Pause } from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight, Clover, Github, Sparkles, Code2, ExternalLink, Upload, X, WandSparkles, ShieldCheck, Trophy } from 'lucide-react';
 import Navbar from './components/Navbar.jsx';
 import GrimoireLoader from './components/GrimoireLoader.jsx';
 import { useTheme } from './hooks/useTheme.js';
@@ -99,115 +99,69 @@ function Reveal({ children, className = '' }) {
   return <div ref={ref} className={`reveal ${className}`}>{children}</div>;
 }
 
-const TETRIS_WIDTH = 10;
-const TETRIS_HEIGHT = 16;
-const TETRIS_SHAPES = [
-  [[1, 1, 1, 1]],
-  [[1, 1], [1, 1]],
-  [[0, 1, 0], [1, 1, 1]],
-  [[1, 0, 0], [1, 1, 1]],
-  [[0, 0, 1], [1, 1, 1]],
-  [[1, 1, 0], [0, 1, 1]],
-  [[0, 1, 1], [1, 1, 0]],
+const achievements = [
+  { number: '01', title: 'Built Campus Connect', date: '2025 / FULL-STACK', description: 'Turned a real campus workflow into one connected experience for students and faculty.', image: '/images/campus-connect-login.png' },
+  { number: '02', title: 'Found a visual voice', date: '2025 / INTERFACE CRAFT', description: 'Explored storefronts, booking flows, and the details that make a product feel considered.', image: '/images/noira-hero.jpg' },
+  { number: '03', title: 'Kept shipping', date: '2026 / MOMENTUM', description: 'Four launches later, curiosity is still the most useful tool in the spellbook.', image: '/images/stayora-home.png' },
+  { number: '04', title: 'Your next milestone', date: 'OPEN / COLLABORATION', description: 'Add a photo, memory, certificate, or note here and make this archive yours.', image: '' },
 ];
-const TETRIS_COLORS = ['cyan', 'gold', 'violet', 'blue', 'orange', 'green', 'red'];
-const emptyTetrisBoard = () => Array.from({ length: TETRIS_HEIGHT }, () => Array(TETRIS_WIDTH).fill(null));
-const randomTetrisPiece = () => {
-  const index = Math.floor(Math.random() * TETRIS_SHAPES.length);
-  const shape = TETRIS_SHAPES[index];
-  return { shape, x: Math.floor((TETRIS_WIDTH - shape[0].length) / 2), y: 0, color: TETRIS_COLORS[index] };
-};
-const canPlaceTetrisPiece = (board, piece, x = piece.x, y = piece.y) => piece.shape.every((row, rowIndex) =>
-  row.every((filled, columnIndex) => !filled ||
-    (x + columnIndex >= 0 && x + columnIndex < TETRIS_WIDTH && y + rowIndex < TETRIS_HEIGHT &&
-      !board[y + rowIndex]?.[x + columnIndex]))
-);
 
-function ContributionQuest() {
-  const [board, setBoard] = useState(emptyTetrisBoard);
-  const [piece, setPiece] = useState(null);
-  const [score, setScore] = useState(0);
-  const [lines, setLines] = useState(0);
-  const [running, setRunning] = useState(false);
-  const [gameOver, setGameOver] = useState(false);
-  const level = Math.floor(lines / 5) + 1;
+function AchievementsArchive() {
+  const sectionRef = useRef(null);
+  const trackRef = useRef(null);
+  const [photos, setPhotos] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('upal-achievement-photos') || '{}'); } catch { return {}; }
+  });
 
-  const startGame = () => {
-    setBoard(emptyTetrisBoard());
-    setPiece(randomTetrisPiece());
-    setScore(0);
-    setLines(0);
-    setGameOver(false);
-    setRunning(true);
-  };
-  const resetQuest = () => startGame();
-  const movePiece = useCallback((direction) => {
-    if (!piece || !running) return;
-    const next = { ...piece, x: piece.x + direction };
-    if (canPlaceTetrisPiece(board, next)) setPiece(next);
-  }, [board, piece, running]);
-  const rotatePiece = useCallback(() => {
-    if (!piece || !running) return;
-    const rotated = piece.shape[0].map((_, index) => piece.shape.map(row => row[index]).reverse());
-    const next = { ...piece, shape: rotated };
-    if (canPlaceTetrisPiece(board, next)) setPiece(next);
-  }, [board, piece, running]);
-  const lockPiece = useCallback((currentPiece) => {
-    const lockedBoard = board.map(row => [...row]);
-    currentPiece.shape.forEach((row, rowIndex) => row.forEach((filled, columnIndex) => {
-      if (filled && lockedBoard[currentPiece.y + rowIndex]) lockedBoard[currentPiece.y + rowIndex][currentPiece.x + columnIndex] = currentPiece.color;
-    }));
-    const remainingRows = lockedBoard.filter(row => row.some(cell => !cell));
-    const cleared = TETRIS_HEIGHT - remainingRows.length;
-    const nextBoard = [...Array.from({ length: cleared }, () => Array(TETRIS_WIDTH).fill(null)), ...remainingRows];
-    const nextPiece = randomTetrisPiece();
-    setBoard(nextBoard);
-    setLines(current => current + cleared);
-    setScore(current => current + ([0, 100, 300, 500, 800][cleared] || 0) * level);
-    if (canPlaceTetrisPiece(nextBoard, nextPiece)) setPiece(nextPiece);
-    else { setPiece(null); setGameOver(true); setRunning(false); }
-  }, [board, level]);
-  const dropPiece = useCallback(() => {
-    if (!piece || !running) return;
-    const next = { ...piece, y: piece.y + 1 };
-    if (canPlaceTetrisPiece(board, next)) setPiece(next);
-    else lockPiece(piece);
-  }, [board, lockPiece, piece, running]);
   useEffect(() => {
-    if (!running || gameOver) return undefined;
-    const timer = window.setInterval(dropPiece, Math.max(120, 700 - (level - 1) * 70));
-    return () => window.clearInterval(timer);
-  }, [dropPiece, gameOver, level, running]);
-  useEffect(() => {
-    const handleKey = event => {
-      if (['ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp', ' '].includes(event.key)) event.preventDefault();
-      if (event.key === 'ArrowLeft') movePiece(-1);
-      if (event.key === 'ArrowRight') movePiece(1);
-      if (event.key === 'ArrowDown') dropPiece();
-      if (event.key === 'ArrowUp') rotatePiece();
-      if (event.key === ' ') setRunning(current => !current);
+    const section = sectionRef.current;
+    const track = trackRef.current;
+    if (!section || !track) return undefined;
+    const updatePosition = () => {
+      if (window.innerWidth <= 760) {
+        track.style.transform = '';
+        return;
+      }
+      const distance = section.offsetHeight - window.innerHeight;
+      const progress = Math.min(1, Math.max(0, -section.getBoundingClientRect().top / distance));
+      track.style.transform = `translate3d(${-progress * (track.scrollWidth - window.innerWidth)}px, 0, 0)`;
     };
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  }, [dropPiece, movePiece, rotatePiece]);
+    updatePosition();
+    window.addEventListener('scroll', updatePosition, { passive: true });
+    window.addEventListener('resize', updatePosition);
+    return () => {
+      window.removeEventListener('scroll', updatePosition);
+      window.removeEventListener('resize', updatePosition);
+    };
+  }, []);
 
-  const displayBoard = board.map(row => [...row]);
-  if (piece) piece.shape.forEach((row, rowIndex) => row.forEach((filled, columnIndex) => {
-    if (filled && displayBoard[piece.y + rowIndex]?.[piece.x + columnIndex] !== undefined) displayBoard[piece.y + rowIndex][piece.x + columnIndex] = piece.color;
-  }));
+  const uploadPhoto = (event, number) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) return;
+    if (file.size > 8 * 1024 * 1024) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const nextPhotos = { ...photos, [number]: String(reader.result) };
+      setPhotos(nextPhotos);
+      try { localStorage.setItem('upal-achievement-photos', JSON.stringify(nextPhotos)); } catch { /* Keep the upload visible for this session. */ }
+    };
+    reader.readAsDataURL(file);
+    event.target.value = '';
+  };
 
-  return <section className="contribution-section" id="contribute">
-    <div className="section-wrap contribution-inner">
-      <Reveal><div className="section-heading contribution-heading"><div><span className="section-index">04 — CONTRIBUTION QUEST</span><h2>Stack the <span>blocks.</span></h2></div><p>Clear lines. Build momentum.<br />Make your contribution count.</p></div></Reveal>
-      <Reveal className="quest-card-wrap"><div className={`quest-card tetris-card ${gameOver ? 'quest-complete' : ''}`}>
-        <div className="quest-card-top"><span className="quest-label">SIDE QUEST / CONTRIBUTION TETRIS</span><span className="quest-counter">SCORE {score.toString().padStart(5, '0')} · LEVEL {level}</span></div>
-        <div className="tetris-game">
-          <div className="tetris-board" role="img" aria-label={`Tetris board. Score ${score}, ${lines} lines cleared.`}>{displayBoard.map((row, rowIndex) => row.map((color, columnIndex) => <span key={`${rowIndex}-${columnIndex}`} className={`tetris-cell ${color ? `is-filled ${color}` : ''}`} />))}</div>
-          <div className="tetris-side-panel"><span className="quest-glyph"><Clover size={38} /></span><h3>{gameOver ? 'Stack overflowed.' : running ? 'Keep the streak alive.' : 'Start the spell.'}</h3><p>{gameOver ? 'Reset the arena and try for a higher score.' : 'Arrange the falling blocks, clear complete lines, and turn small moves into momentum.'}</p><div className="tetris-stats"><span><small>SCORE</small><strong>{score.toString().padStart(5, '0')}</strong></span><span><small>LINES</small><strong>{lines.toString().padStart(2, '0')}</strong></span></div><div className="tetris-controls"><button onClick={running ? () => setRunning(false) : (gameOver ? startGame : () => { if (!piece) setPiece(randomTetrisPiece()); setRunning(true); })}>{running ? <><Pause size={14} /> PAUSE</> : <><Play size={14} /> {gameOver ? 'NEW RUN' : 'PLAY TETRIS'}</>}</button><button onClick={resetQuest}><RotateCcw size={14} /> RESET</button></div><small className="tetris-help">ARROWS MOVE · UP ROTATES · DOWN DROPS · SPACE PAUSES</small></div>
-        </div>
-        <div className="quest-footer"><span><span className="quest-pulse" /> {gameOver ? 'RUN COMPLETE — START A NEW ONE' : 'EVERY CLEARED LINE IS A CONTRIBUTION'}</span></div>
-      </div></Reveal>
-      <Reveal className="quest-cta"><p>Ready to make it real?</p><a className="button button-primary" href="https://github.com/upalpatil-inft-cmyk" target="_blank" rel="noreferrer">Visit the GitHub guild <ArrowUpRight size={16} /></a></Reveal>
+  return <section className="achievements-section" id="contribute" ref={sectionRef}>
+    <div className="achievements-sticky">
+      <div className="section-wrap achievements-intro"><Reveal><div className="section-heading"><div><span className="section-index">04 — ACHIEVEMENT ARCHIVE</span><h2>Scroll through the <span>milestones.</span></h2></div><p>A living record of things built,<br />learned, and worth remembering.</p></div></Reveal><span className="horizontal-hint"><ArrowDownRight size={15} /> KEEP SCROLLING TO EXPLORE</span></div>
+      <div className="achievements-track" ref={trackRef}>
+        {achievements.map(item => {
+          const image = photos[item.number] || item.image;
+          return <article className="achievement-card" key={item.number}>
+            <div className="achievement-photo">{image ? <img src={image} alt="" loading="lazy" /> : <div className="achievement-empty"><Trophy size={42} /><span>YOUR PHOTO</span></div>}<span className="achievement-number">{item.number}</span><label className="achievement-upload"><Upload size={14} /> {image && photos[item.number] ? 'CHANGE PHOTO' : 'ADD PHOTO'}<input type="file" accept="image/*" onChange={event => uploadPhoto(event, item.number)} /></label></div>
+            <div className="achievement-copy"><span className="achievement-date">{item.date}</span><h3>{item.title}</h3><p>{item.description}</p></div>
+          </article>;
+        })}
+      </div>
     </div>
   </section>;
 }
@@ -296,7 +250,7 @@ export default function App() {
         </article></Reveal>)}</div>
       </div></section>
 
-      <ContributionQuest />
+      <AchievementsArchive />
 
       <section className="contact-section section-wrap" id="contact"><Reveal><span className="section-index">05 — OPEN A PORTAL</span><h2>Got a good<br /><span>mission in mind?</span></h2><p>Let's build something worth opening a grimoire for.</p><a className="button button-primary" href="https://github.com/upalpatil-inft-cmyk" target="_blank" rel="noreferrer">Connect on GitHub <ArrowUpRight size={17} /></a></Reveal><div className="contact-foot"><span>UPAL PATIL © 2026</span><span>MADE WITH INTENTION <Clover size={13} /></span><a href="https://github.com/upalpatil-inft-cmyk" target="_blank" rel="noreferrer"><Github size={14} /> GITHUB</a></div></section>
     </main>
