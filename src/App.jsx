@@ -100,9 +100,9 @@ function Reveal({ children, className = '' }) {
 }
 
 const achievements = [
-  { number: '01', title: 'Built Campus Connect', date: '2025 / FULL-STACK', description: 'Turned a real campus workflow into one connected experience for students and faculty.', image: '/images/campus-connect-login.png' },
-  { number: '02', title: 'Found a visual voice', date: '2025 / INTERFACE CRAFT', description: 'Explored storefronts, booking flows, and the details that make a product feel considered.', image: '/images/noira-hero.jpg' },
-  { number: '03', title: 'Kept shipping', date: '2026 / MOMENTUM', description: 'Four launches later, curiosity is still the most useful tool in the spellbook.', image: '/images/stayora-home.png' },
+  { number: '01', title: 'Built Campus Connect', date: '2025 / FULL-STACK', description: 'Turned a real campus workflow into one connected experience for students and faculty.', image: '' },
+  { number: '02', title: 'Found a visual voice', date: '2025 / INTERFACE CRAFT', description: 'Explored storefronts, booking flows, and the details that make a product feel considered.', image: '' },
+  { number: '03', title: 'Kept shipping', date: '2026 / MOMENTUM', description: 'Four launches later, curiosity is still the most useful tool in the spellbook.', image: '' },
   { number: '04', title: 'Your next milestone', date: 'OPEN / COLLABORATION', description: 'Add a photo, memory, certificate, or note here and make this archive yours.', image: '' },
 ];
 
