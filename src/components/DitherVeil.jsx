@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 export default function DitherVeil({ src, alt }) {
   const frameRef = useRef(null);
