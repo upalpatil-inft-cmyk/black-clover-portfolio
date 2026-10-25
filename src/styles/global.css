@@ -24,6 +24,28 @@
 .project-featured .campus-preview{width:100%;min-height:330px;border:1px solid rgba(115,240,160,.34);border-radius:9px;overflow:hidden;box-shadow:0 18px 55px rgba(0,0,0,.22),0 0 40px var(--glow);transform:perspective(1200px) rotateY(2deg);transition:transform .45s,box-shadow .45s}
 .project-featured:hover .campus-preview{transform:perspective(1200px) rotateY(0) translateY(-3px);box-shadow:0 25px 65px rgba(0,0,0,.26),0 0 55px var(--glow)}
 .project-featured .project-body{display:flex;flex-direction:column;justify-content:center;padding:clamp(24px,4vw,48px)}
+.dither-veil{position:absolute;inset:0;display:block;overflow:hidden}
+.dither-veil__image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.dither-veil__image--ink{filter:grayscale(1) contrast(1.35) brightness(.72);transform:scale(1.015)}
+.dither-veil__image--color{clip-path:circle(0 at var(--veil-x) var(--veil-y));transition:clip-path .18s ease-out;filter:saturate(.9) contrast(1.08)}
+.dither-veil.is-revealed .dither-veil__image--color{clip-path:circle(30% at var(--veil-x) var(--veil-y))}
+.dither-veil__screen{position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(rgba(239,231,215,.28) .65px,transparent .8px);background-size:4px 4px;mix-blend-mode:screen;opacity:.22}
+.dither-veil__hint{position:absolute;left:20px;bottom:18px;color:#efe7d7;font:8px 'DM Mono',monospace;letter-spacing:.14em;text-shadow:0 1px 8px #000;opacity:.82;transition:opacity .2s}
+.dither-veil.is-revealed .dither-veil__hint{opacity:0}
+.dossier-toggle{align-self:flex-start;margin-top:17px;padding:0;border:0;background:transparent;color:var(--accent);font:9px 'DM Mono',monospace;letter-spacing:.12em;cursor:pointer}
+.dossier-toggle:hover{text-decoration:underline}
+.mission-dossier{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;padding:16px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--surface) 72%,transparent)}
+.mission-dossier div{min-width:0}
+.mission-dossier span{display:block;color:var(--accent);font:8px 'DM Mono',monospace;letter-spacing:.12em}
+.mission-dossier strong,.mission-dossier p{display:block;margin:6px 0 0;color:var(--muted);font-size:10px;line-height:1.55}
+.mission-dossier strong{color:var(--text);font-weight:600}
+@media (hover:none), (max-width:720px){
+  .dither-veil__image--color{clip-path:none}
+  .dither-veil__hint{display:none}
+}
+@media (max-width:600px){
+  .mission-dossier{grid-template-columns:1fr;padding:13px}
+}
 .project-featured .project-title-row{display:block;margin:12px 0}
 .project-featured .project-title-row h3{font-size:clamp(34px,4vw,49px);line-height:1.05}
 .project-featured .project-category{display:block;text-align:left;margin-top:8px;font-size:10px}

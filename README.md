@@ -12,6 +12,8 @@ React + Vite portfolio with a manga-editorial visual direction: ink-black surfac
 ## Design and media
 - The hero uses a locally bundled original grimoire illustration so the main visual does not depend on an external image host.
 - The opening sequence animates a three-leaf, four-leaf, and five-leaf seal with individual leaf-drawing effects, a progress indicator, a skip control, reduced-motion support, and a session-based once-per-tab display.
+- Stage 01 adds a focused Dither Veil to the hero grimoire: desktop pointer movement uncovers the color artwork while touch devices receive the full artwork without a hover dependency.
+- Mission cards include expandable dossiers with the build role, challenge, outcome, and concrete proof of the implementation. The remaining React Bits candidates are intentionally not enabled yet so each effect can be evaluated independently.
 - Crunchyroll's official Black Clover series page and a Pinterest search moodboard are linked as references.
 - The grimoire illustration is an original generated portfolio asset. Black Clover references and linked anime media belong to their respective rights holders. For a public production site, only use third-party media you have permission to embed or distribute.
 - Layout and styling are original and do not reproduce Crunchyroll's or Pinterest's website UI.

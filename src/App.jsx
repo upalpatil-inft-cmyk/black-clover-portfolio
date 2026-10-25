@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ArrowDownRight, ArrowUpRight, Clover, Github, Sparkles, Code2, ExternalLink, Upload, X, WandSparkles, ShieldCheck, Trophy } from 'lucide-react';
 import Navbar from './components/Navbar.jsx';
 import GrimoireLoader from './components/GrimoireLoader.jsx';
+import DitherVeil from './components/DitherVeil.jsx';
 import { useTheme } from './hooks/useTheme.js';
 
 const projects = [
@@ -10,25 +11,29 @@ const projects = [
     description: 'A campus-focused platform designed to bring student and faculty academic workflows into one place.',
     tags: ['React', 'Spring Boot', 'MySQL'],
     live: 'https://campus-connect-umber-eight.vercel.app/', github: 'https://github.com/upalpatil-inft-cmyk/CampusConnect',
-    kind: 'campus-screenshot', image: '/images/campus-connect-login.png', alt: 'Genuine Campus Connect sign-in screen for Atharva University'
+    kind: 'campus-screenshot', image: '/images/campus-connect-login.png',     alt: 'Genuine Campus Connect sign-in screen for Atharva University',
+    dossier: { role: 'Full-stack build', challenge: 'Bring student and faculty workflows into one dependable place.', outcome: 'A connected campus system with a focused sign-in experience.', proof: 'React UI, Spring Boot services, MySQL data layer' }
   },
   {
     number: '02', title: 'Pet Store', category: 'E-commerce storefront', type: 'COMMERCE MISSION',
     description: 'A friendly storefront concept for browsing pet products, built around a playful visual identity.',
     tags: ['HTML', 'CSS', 'Responsive UI'], live: 'https://pet-store-kappa-umber.vercel.app/',
-    github: 'https://github.com/upalpatil-inft-cmyk/pet-store', image: '/images/pet-store-logo.png', kind: 'logo', alt: 'Pet Store project logo asset'
+    github: 'https://github.com/upalpatil-inft-cmyk/pet-store', image: '/images/pet-store-logo.png', kind: 'logo', alt: 'Pet Store project logo asset',
+    dossier: { role: 'Frontend build', challenge: 'Make product discovery feel friendly without losing clarity.', outcome: 'A responsive storefront concept with a playful visual system.', proof: 'Semantic HTML, responsive CSS, accessible product hierarchy' }
   },
   {
     number: '03', title: 'Stayora', category: 'Hotel booking experience', type: 'TRAVEL MISSION',
     description: 'A hotel-booking interface focused on browsing stays and moving through a clear booking journey.',
     tags: ['React', 'UI Design', 'Booking Flow'], live: 'https://stayora-hotel-booking-jade.vercel.app/',
-    github: 'https://github.com/upalpatil-inft-cmyk/stayora-hotel-booking', image: '/images/stayora-home.png', kind: 'photo', alt: 'Stayora hotel booking website screenshot'
+    github: 'https://github.com/upalpatil-inft-cmyk/stayora-hotel-booking', image: '/images/stayora-home.png', kind: 'photo', alt: 'Stayora hotel booking website screenshot',
+    dossier: { role: 'Product interface', challenge: 'Turn browsing stays into a calm, legible booking journey.', outcome: 'A hotel experience that makes destinations and next steps easy to scan.', proof: 'React components, booking-flow UX, responsive UI' }
   },
   {
     number: '04', title: 'Noira', category: 'Skincare storefront', type: 'BRAND MISSION',
     description: 'A minimal skincare storefront with a premium product-led look and a calm editorial aesthetic.',
     tags: ['HTML', 'CSS', 'E-commerce UI'], live: 'https://noira-skincare.vercel.app/',
-    github: 'https://github.com/upalpatil-inft-cmyk/noira-skincare', image: '/images/noira-hero.jpg', kind: 'photo', alt: 'Noira skincare storefront hero asset'
+    github: 'https://github.com/upalpatil-inft-cmyk/noira-skincare', image: '/images/noira-hero.jpg', kind: 'photo', alt: 'Noira skincare storefront hero asset',
+    dossier: { role: 'Brand storefront', challenge: 'Let product photography and a quiet identity lead the page.', outcome: 'A premium skincare storefront with an editorial rhythm.', proof: 'HTML, CSS, product-led e-commerce layout' }
   },
 ];
 
@@ -171,6 +176,7 @@ export default function App() {
   const [filter, setFilter] = useState('All');
   const [artifactOpen, setArtifactOpen] = useState(false);
   const [skillTracker, setSkillTracker] = useState({ x: 50, y: 50, active: false });
+  const [openDossier, setOpenDossier] = useState(null);
   const [showGrimoire, setShowGrimoire] = useState(true);
   const completeGrimoire = useCallback(() => {
     setShowGrimoire(false);
@@ -208,7 +214,7 @@ export default function App() {
         <div className={`anime-hero-stage hero-enter ${artifactOpen ? 'artifact-is-open' : ''}`} aria-label="Interactive grimoire artifact">
           <div className="anime-panel-top"><span>GRIMOIRE ARCHIVE / DEVELOPER FILE</span><span>REF. 001 — ANTI-MAGIC</span></div>
           <button className="anime-artwork-wrap" type="button" onClick={() => setArtifactOpen(open => !open)} onPointerMove={trackSkill} onPointerEnter={trackSkill} onPointerLeave={() => setSkillTracker(tracker => ({ ...tracker, active: false }))} aria-expanded={artifactOpen} aria-controls="grimoire-inspection" aria-label={artifactOpen ? 'Close grimoire inspection' : 'Inspect the grimoire'}>
-            <img className="anime-artwork" src="/images/grimoire-artifact.webp" alt="Original dark parchment grimoire illustration with a five-leaf clover seal" loading="eager" />
+            <DitherVeil src="/images/grimoire-artifact.webp" alt="Original dark parchment grimoire illustration with a five-leaf clover seal" />
             <div className="anime-artwork-shade" />
             <span className={`skill-tracker ${skillTracker.active ? 'is-active' : ''}`} style={{ '--tracker-x': `${skillTracker.x}%`, '--tracker-y': `${skillTracker.y}%` }} aria-hidden="true">
               <span className="skill-tracker-blob" />
@@ -246,7 +252,7 @@ export default function App() {
         <div className="project-filters" role="group" aria-label="Filter projects">{filters.map(item => <button key={item} className={filter === item ? 'active' : ''} onClick={() => setFilter(item)} aria-pressed={filter === item}>{item}</button>)}</div>
         <div className="project-grid">{visibleProjects.map(project => <Reveal key={project.number} className={`project-card-wrap ${project.number === '01' ? 'project-featured-wrap' : ''}`}><article className={`project-card ${project.number === '01' ? 'project-featured' : ''}`}>
           <div className="project-visual"><ProjectVisual project={project} /><span className="project-index">MISSION / {project.number}</span>{project.number === '01' && <><span className="featured-label"><Clover size={12} /> FLAGSHIP MISSION</span><span className="featured-orbit featured-orbit-one"/><span className="featured-orbit featured-orbit-two"/></>}</div>
-          <div className="project-body">{project.number === '01' && <div className="featured-overline"><span className="featured-pulse"/> PRIORITY MISSION <span>•</span> CAMPUS SYSTEMS</div>}<div className="project-type">{project.type}</div><div className="project-title-row"><h3>{project.title}</h3><span className="project-category">{project.category}</span></div><p>{project.description}</p>{project.number === '01' && <div className="featured-points"><span><Clover size={14}/> Student-focused workflows</span><span><Clover size={14}/> Faculty-facing academic tools</span><span><Clover size={14}/> One connected campus experience</span></div>}<div className="project-tags">{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div><div className="project-links"><a className="project-live-link" href={project.live} target="_blank" rel="noreferrer"><ExternalLink size={15} /> Launch live demo <ArrowUpRight size={14}/></a><a href={project.github} target="_blank" rel="noreferrer"><Github size={15} /> Source code</a></div></div>
+          <div className="project-body">{project.number === '01' && <div className="featured-overline"><span className="featured-pulse"/> PRIORITY MISSION <span>•</span> CAMPUS SYSTEMS</div>}<div className="project-type">{project.type}</div><div className="project-title-row"><h3>{project.title}</h3><span className="project-category">{project.category}</span></div><p>{project.description}</p>{project.number === '01' && <div className="featured-points"><span><Clover size={14}/> Student-focused workflows</span><span><Clover size={14}/> Faculty-facing academic tools</span><span><Clover size={14}/> One connected campus experience</span></div>}<div className="project-tags">{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div><button className="dossier-toggle" type="button" aria-expanded={openDossier === project.number} onClick={() => setOpenDossier(openDossier === project.number ? null : project.number)}> {openDossier === project.number ? 'CLOSE DOSSIER −' : 'OPEN DOSSIER +'}</button>{openDossier === project.number && <div className="mission-dossier"><div><span>ROLE</span><strong>{project.dossier.role}</strong></div><div><span>CHALLENGE</span><p>{project.dossier.challenge}</p></div><div><span>OUTCOME</span><p>{project.dossier.outcome}</p></div><div><span>PROOF OF BUILD</span><p>{project.dossier.proof}</p></div></div>}<div className="project-links"><a className="project-live-link" href={project.live} target="_blank" rel="noreferrer"><ExternalLink size={15} /> Launch live demo <ArrowUpRight size={14}/></a><a href={project.github} target="_blank" rel="noreferrer"><Github size={15} /> Source code</a></div></div>
         </article></Reveal>)}</div>
       </div></section>
 
