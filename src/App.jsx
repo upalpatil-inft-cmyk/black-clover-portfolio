@@ -113,6 +113,50 @@ const achievements = [
 
 const technologyLoop = ['REACT', 'SPRING BOOT', 'MYSQL', 'JAVASCRIPT', 'HTML', 'CSS', 'RESPONSIVE UI', 'BOOKING FLOW'];
 
+const commandItems = [
+  { label: 'Return to the hero', detail: 'Navigate / Home', href: '#home' },
+  { label: 'Read the mage file', detail: 'Navigate / About', href: '#about' },
+  { label: 'Open magic attributes', detail: 'Navigate / Skills', href: '#attributes' },
+  { label: 'Inspect mission archive', detail: 'Navigate / Work', href: '#missions' },
+  { label: 'View achievement archive', detail: 'Navigate / Milestones', href: '#contribute' },
+  { label: 'Open a portal', detail: 'Navigate / Contact', href: '#contact' },
+  { label: 'View GitHub profile', detail: 'External / GitHub', href: 'https://github.com/upalpatil-inft-cmyk', external: true },
+];
+
+function CommandMenu({ open, onClose }) {
+  const inputRef = useRef(null);
+  const [query, setQuery] = useState('');
+  const filteredItems = commandItems.filter(item => `${item.label} ${item.detail}`.toLowerCase().includes(query.toLowerCase()));
+
+  useEffect(() => {
+    if (!open) return undefined;
+    setQuery('');
+    inputRef.current?.focus();
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const handleKeyDown = event => {
+      if (event.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [open, onClose]);
+
+  if (!open) return null;
+  return <div className="command-menu" role="dialog" aria-modal="true" aria-labelledby="command-menu-title" onMouseDown={event => { if (event.target === event.currentTarget) onClose(); }}>
+    <div className="command-panel">
+      <div className="command-head"><span id="command-menu-title">SPELLBOOK COMMANDS</span><button type="button" onClick={onClose} aria-label="Close command menu"><X size={17} /></button></div>
+      <label className="command-search"><span aria-hidden="true">⌕</span><input ref={inputRef} value={query} onChange={event => setQuery(event.target.value)} placeholder="Search the archive..." aria-label="Search commands" /><kbd>ESC</kbd></label>
+      <div className="command-results" role="listbox" aria-label="Available commands">
+        {filteredItems.length ? filteredItems.map(item => <a key={item.href} href={item.href} target={item.external ? '_blank' : undefined} rel={item.external ? 'noreferrer' : undefined} onClick={onClose} className="command-item" role="option"><span><strong>{item.label}</strong><small>{item.detail}</small></span><ArrowUpRight size={15} /></a>) : <p className="command-empty">NO SPELL FOUND / TRY ANOTHER TERM</p>}
+      </div>
+      <div className="command-foot"><span><kbd>↵</kbd> OPEN</span><span><kbd>ESC</kbd> CLOSE</span><span className="command-shortcut">GRIMOIRE / 005</span></div>
+    </div>
+  </div>;
+}
+
 function TechnologyLoop() {
   const items = [...technologyLoop, ...technologyLoop];
   return <div className="technology-loop" aria-label="Technologies used across the mission archive">
@@ -188,6 +232,18 @@ export default function App() {
   const [artifactOpen, setArtifactOpen] = useState(false);
   const [skillTracker, setSkillTracker] = useState({ x: 50, y: 50, active: false });
   const [openDossier, setOpenDossier] = useState(null);
+  const [commandOpen, setCommandOpen] = useState(false);
+  const closeCommand = useCallback(() => setCommandOpen(false), []);
+  useEffect(() => {
+    const handleShortcut = event => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        setCommandOpen(open => !open);
+      }
+    };
+    window.addEventListener('keydown', handleShortcut);
+    return () => window.removeEventListener('keydown', handleShortcut);
+  }, []);
   const [showGrimoire, setShowGrimoire] = useState(true);
   const completeGrimoire = useCallback(() => {
     setShowGrimoire(false);
@@ -209,9 +265,9 @@ export default function App() {
     (filter === 'E-commerce' && ['02', '04'].includes(project.number)) ||
     (filter === 'Web UI' && ['03'].includes(project.number)));
 
-  return <>{showGrimoire && <GrimoireLoader onComplete={completeGrimoire} />}<div aria-hidden={showGrimoire} className={`app-shell ${showGrimoire ? '' : 'intro-ready'}`}>
+  return <>{showGrimoire && <GrimoireLoader onComplete={completeGrimoire} />}<CommandMenu open={commandOpen} onClose={closeCommand} /><div aria-hidden={showGrimoire || commandOpen} className={`app-shell ${showGrimoire ? '' : 'intro-ready'}`}>
     <div className="ambient ambient-one" aria-hidden="true" /><div className="ambient ambient-two" aria-hidden="true" />
-    <Navbar theme={theme} toggleTheme={toggleTheme} />
+    <Navbar theme={theme} toggleTheme={toggleTheme} onCommandOpen={() => setCommandOpen(true)} />
     <main>
       <section className="hero section-wrap" id="home">
         <div className="hero-copy hero-enter">

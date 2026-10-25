@@ -10,7 +10,7 @@ const links = [
   { label: 'Contact', href: '#contact' },
 ];
 
-export default function Navbar({ theme, toggleTheme }) {
+export default function Navbar({ theme, toggleTheme, onCommandOpen }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const closeMenu = () => setMenuOpen(false);
 
@@ -27,6 +27,9 @@ export default function Navbar({ theme, toggleTheme }) {
       </nav>
 
       <div className="nav-actions">
+        <button className="command-trigger" type="button" onClick={onCommandOpen} aria-label="Open spellbook command menu">
+          <span>COMMANDS</span><kbd>⌘K</kbd>
+        </button>
         <button className="theme-toggle" onClick={toggleTheme} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`} title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}>
           {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
           <span>{theme === 'dark' ? 'LIGHT' : 'DARK'}</span>
