@@ -111,6 +111,17 @@ const achievements = [
   { number: '04', title: 'Your next milestone', date: 'OPEN / COLLABORATION', description: 'Add a photo, memory, certificate, or note here and make this archive yours.', image: '' },
 ];
 
+const technologyLoop = ['REACT', 'SPRING BOOT', 'MYSQL', 'JAVASCRIPT', 'HTML', 'CSS', 'RESPONSIVE UI', 'BOOKING FLOW'];
+
+function TechnologyLoop() {
+  const items = [...technologyLoop, ...technologyLoop];
+  return <div className="technology-loop" aria-label="Technologies used across the mission archive">
+    <div className="technology-loop__track">
+      {items.map((technology, index) => <span key={`${technology}-${index}`}><i>✳</i>{technology}</span>)}
+    </div>
+  </div>;
+}
+
 function AchievementsArchive() {
   const sectionRef = useRef(null);
   const trackRef = useRef(null);
@@ -247,6 +258,7 @@ export default function App() {
       <section className="coming-section section-wrap" id="attributes"><Reveal><div className="section-heading"><div><span className="section-index">02 — MAGIC ATTRIBUTES</span><h2>My kind of <span>magic.</span></h2></div><p>Tools are the spellbook.<br />What you make is the magic.</p></div></Reveal>
         <div className="attribute-grid"><Reveal><article className="attribute-card"><span className="attribute-number">A / 01</span><div className="attribute-icon"><Code2 size={23} /></div><h3>Engineering</h3><p>Turning ideas into reliable, working experiences.</p><span className="attribute-tag">LOGIC · STRUCTURE</span></article></Reveal><Reveal><article className="attribute-card"><span className="attribute-number">B / 02</span><div className="attribute-icon">✳</div><h3>Interface craft</h3><p>Building interfaces that feel clear, considered, and alive.</p><span className="attribute-tag">DESIGN · DETAIL</span></article></Reveal><Reveal><article className="attribute-card"><span className="attribute-number">C / 03</span><div className="attribute-icon"><Sparkles size={23} /></div><h3>Curiosity</h3><p>Learning fast, experimenting often, improving every build.</p><span className="attribute-tag">GROWTH · ITERATION</span></article></Reveal></div>
       </section>
+      <TechnologyLoop />
 
       <section className="missions-section" id="missions"><div className="section-wrap missions-inner"><Reveal><div className="section-heading"><div><span className="section-index">03 — MISSION ARCHIVE</span><h2>Proof over <span>promises.</span></h2></div><p>Four builds. Different challenges.<br />One more spell learned each time.</p></div></Reveal>
         <div className="project-filters" role="group" aria-label="Filter projects">{filters.map(item => <button key={item} className={filter === item ? 'active' : ''} onClick={() => setFilter(item)} aria-pressed={filter === item}>{item}</button>)}</div>
